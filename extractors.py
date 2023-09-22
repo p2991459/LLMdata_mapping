@@ -1,9 +1,8 @@
 import pandas as pd
-import openai
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from generator_llms import openai_code_generator
+from generator_llms import openai_code_generator,dict_generater
 
 def read_tables(tables:dict):
     '''Merege the tables if found more than one'''
@@ -56,9 +55,11 @@ def create_target_table(targets:dict,source_table,target_file_name):
 
 def convert(tables:dict,template_table,target_file_name,source_table_name,template_table_name):
     source_table = read_tables(tables)
-    targets = get_target_columns(source_table,template_table)
+    # targets = get_target_columns(source_table,template_table)
+    targets = eval(dict_generater(source_table,template_table))
+    print(f"Target From Cosine Similarity:{targets}")
     target_table = create_target_table(targets,source_table,target_file_name)
     generated_code = openai_code_generator(template_table,target_table,target_file_name,source_table_name,template_table_name)
-    print(f"INFO: Genreated Code is: {generated_code}")
+    print(f"INFO: Generated Code is: {generated_code}")
     exec(generated_code)
 

@@ -1,7 +1,8 @@
 import openai
-import os
+
+api_key = "PASTE_YOUR_OPENAI_KEY"
+
 def openai_code_generator(template_table,target_table,target_file_name,source_table_name,template_table_name):
-    api_key = os.getenv("OPENAI_API_KEY")
     prompt = f"""
                 you are a python developer
                 you got 2 csv files -
@@ -47,4 +48,42 @@ def openai_code_generator(template_table,target_table,target_file_name,source_ta
 
     response_text = response.choices[0].text.strip()
 
+    return response_text
+
+
+def dict_generater(source_file, template_file):
+    prompt = f"""
+                you are a data analysist
+                - I'm providing you 2 tables
+                    1. source table
+                    2. template table
+
+                - you need to make a new dataset by the data of source table in the format of template table
+                - in the new dataset columns name will be same as template table but data will be getted from source table
+
+                for now your task is to make a python dictionary to target the columns of source table to extract data for new dataset
+                in the dictionary keys will be the columns names of template table and values will be the column names of source table from where we can extract data for new dataset
+
+                now I'm providing you the tables
+
+                source table - 
+                {source_file.head()}
+                --------------------------------
+
+                template table - 
+                {template_file.head()}
+                ---------------------------------
+
+                your output should be clean python dictionary like a printed dictionary in the terminal not in the code with variable
+
+            """
+
+    response = openai.Completion.create(
+        engine="text-davinci-003",  # Use the appropriate OpenAI engine
+        prompt=prompt,
+        max_tokens=500,  # Adjust the token limit as needed
+        api_key=api_key,
+        temperature=0.01
+    )
+    response_text = response.choices[0].text.strip()
     return response_text

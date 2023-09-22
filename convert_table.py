@@ -6,9 +6,8 @@ def main():
     parser.add_argument("--sources", nargs='+', required=True, help="List of source CSV files")
     parser.add_argument("--template", required=True, help="Template CSV file")
     parser.add_argument("--target", required=True, help="Target CSV file")
-
     args = parser.parse_args()
-    source_files = args.sources
+    source_files = args.sources #Multiple CSV files in a list
     template_file = args.template
     target_file_name = args.target
     tables:dict = {}
